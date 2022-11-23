@@ -23,7 +23,7 @@ def generateTask(day, path) {
     tasks.register("day$day", JavaExec) {
         dependsOn('classes')
         classpath = sourceSets.main.runtimeClasspath
-        main = path
+        mainClass = path
     }
 }
 
