@@ -7,10 +7,10 @@ fn main() {
 }
 
 fn part1(s: String) -> u32 {
-    let mut max = 0_u32;
     s.split("\n\n")
-        .for_each(|lines| max = max.max(lines.lines().map(|n| n.parse::<u32>().unwrap()).sum()));
-    max
+        .map(|lines| lines.lines().map(|n| n.parse::<u32>().unwrap()).sum())
+        .max()
+        .unwrap()
 }
 
 fn part2(s: String) -> u32 {
