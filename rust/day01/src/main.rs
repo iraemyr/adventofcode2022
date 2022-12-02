@@ -6,9 +6,10 @@ fn main() {
     println!("{}", part2(contents)); // 212520
 }
 
-fn part1(s: String) -> u32 {
-    s.split("\n\n")
-        .map(|lines| lines.lines().map(|n| n.parse::<u32>().unwrap()).sum())
+fn part1(elves: String) -> u32 {
+    elves
+        .split("\n\n")
+        .map(|elf| elf.lines().map(|n| n.parse::<u32>().unwrap()).sum())
         .max()
         .unwrap()
 }
@@ -16,7 +17,7 @@ fn part1(s: String) -> u32 {
 fn part2(s: String) -> u32 {
     let mut elves: Vec<u32> = s
         .split("\n\n")
-        .map(|lines| lines.lines().map(|n| n.parse::<u32>().unwrap()).sum())
+        .map(|elf| elf.lines().map(|n| n.parse::<u32>().unwrap()).sum())
         .collect();
     elves.sort_by(|a, b| b.cmp(a));
     elves.iter().take(3).sum()
