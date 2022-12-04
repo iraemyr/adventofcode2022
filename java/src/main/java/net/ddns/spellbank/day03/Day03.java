@@ -1,7 +1,6 @@
 package net.ddns.spellbank.day03;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.BitSet;
 
 import net.ddns.spellbank.utils.InputFile;
 
@@ -16,16 +15,17 @@ public class Day03 {
     }
 
     public static long part1(String[] lines) {
-        var items = new HashSet<Character>();
+        var items = new BitSet(52);
         long priorities = 0;
         for (var line : lines) {
             items.clear();
             for (int i = 0; i < line.length(); i++) {
                 char c = line.charAt(i);
+                var priority = getPriority(c);
                 if (i < line.length() / 2) {
-                    items.add(c);
-                } else if (items.contains(c)) {
-                    priorities += getPriority(c);
+                    items.set(priority);
+                } else if (items.get(priority)) {
+                    priorities += priority;
                     break;
                 }
             }
@@ -36,27 +36,26 @@ public class Day03 {
     public static long part2(String[] lines) {
         int i = 0;
         long priorities = 0;
-        Set<Character> packages1 = new HashSet<Character>();
-        Set<Character> packages2 = new HashSet<Character>();
+        var packages1 = new BitSet(52);
+        var packages2 = new BitSet(52);
         while (i < lines.length) {
             packages1.clear();
             packages2.clear();
             for (char c : lines[i++].toCharArray())
-                packages1.add(c);
+                packages1.set(getPriority(c));
             for (char c : lines[i++].toCharArray())
-                packages2.add(c);
-            packages1.retainAll(packages2);
+                packages2.set(getPriority(c));
+            packages1.and(packages2);
             packages2.clear();
             for (char c : lines[i++].toCharArray())
-                packages2.add(c);
-            packages1.retainAll(packages2);
-            var v = packages1.iterator().next();
-            priorities += getPriority(v);
+                packages2.set(getPriority(c));
+            packages1.and(packages2);
+            priorities += packages1.nextSetBit(0);
         }
         return priorities;
     }
 
-    private static long getPriority(char c) {
+    private static int getPriority(char c) {
         return Character.isLowerCase(c) ? c - 'a' + 1 : c - 'A' + 27;
     }
 }
