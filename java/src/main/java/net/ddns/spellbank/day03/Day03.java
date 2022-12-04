@@ -15,7 +15,7 @@ public class Day03 {
     }
 
     public static long part1(String[] lines) {
-        var items = new BitSet(52);
+        var items = new BitSet(53);
         long priorities = 0;
         for (var line : lines) {
             items.clear();
@@ -36,8 +36,8 @@ public class Day03 {
     public static long part2(String[] lines) {
         int i = 0;
         long priorities = 0;
-        var packages1 = new BitSet(52);
-        var packages2 = new BitSet(52);
+        var packages1 = new BitSet(53);
+        var packages2 = new BitSet(53);
         while (i < lines.length) {
             packages1.clear();
             packages2.clear();

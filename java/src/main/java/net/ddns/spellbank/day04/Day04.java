@@ -8,16 +8,40 @@ public class Day04 {
         String file = "day04/input1";
         String[] lines = InputFile.getLines(file);
 
-        System.out.println(part1(lines));
-        System.out.println(part2(lines));
+        System.out.println(part1(lines)); // 448
+        System.out.println(part2(lines)); // 794
     }
 
     public static long part1(String[] lines) {
-        return 0;
+        long contained = 0;
+        for (var line : lines) {
+            var fields = line.split(",");
+            var first = fields[0].split("-");
+            var second = fields[1].split("-");
+            var start1 = Integer.parseInt(first[0]);
+            var start2 = Integer.parseInt(second[0]);
+            var end1 = Integer.parseInt(first[1]);
+            var end2 = Integer.parseInt(second[1]);
+            if ((start1 <= start2 && end1 >= end2) || (start2 <= start1 && end2 >= end1))
+                contained++;
+        }
+        return contained;
     }
 
     public static long part2(String[] lines) {
-        return 0;
+        long overlap = 0;
+        for (var line : lines) {
+            var fields = line.split(",");
+            var first = fields[0].split("-");
+            var second = fields[1].split("-");
+            var start1 = Integer.parseInt(first[0]);
+            var start2 = Integer.parseInt(second[0]);
+            var end1 = Integer.parseInt(first[1]);
+            var end2 = Integer.parseInt(second[1]);
+            if (!(end1 < start2 || end2 < start1))
+                overlap++;
+        }
+        return overlap;
     }
 
 }
