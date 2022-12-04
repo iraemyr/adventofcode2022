@@ -15,13 +15,11 @@ public class Day04 {
     public static long part1(String[] lines) {
         long contained = 0;
         for (var line : lines) {
-            var fields = line.split(",");
-            var first = fields[0].split("-");
-            var second = fields[1].split("-");
-            var start1 = Integer.parseInt(first[0]);
-            var start2 = Integer.parseInt(second[0]);
-            var end1 = Integer.parseInt(first[1]);
-            var end2 = Integer.parseInt(second[1]);
+            var fields = line.split("[,-]");
+            var start1 = Integer.parseInt(fields[0]);
+            var end1 = Integer.parseInt(fields[1]);
+            var start2 = Integer.parseInt(fields[2]);
+            var end2 = Integer.parseInt(fields[3]);
             if ((start1 <= start2 && end1 >= end2) || (start2 <= start1 && end2 >= end1))
                 contained++;
         }
@@ -31,17 +29,14 @@ public class Day04 {
     public static long part2(String[] lines) {
         long overlap = 0;
         for (var line : lines) {
-            var fields = line.split(",");
-            var first = fields[0].split("-");
-            var second = fields[1].split("-");
-            var start1 = Integer.parseInt(first[0]);
-            var start2 = Integer.parseInt(second[0]);
-            var end1 = Integer.parseInt(first[1]);
-            var end2 = Integer.parseInt(second[1]);
-            if (!(end1 < start2 || end2 < start1))
+            var fields = line.split("[,-]");
+            var start1 = Integer.parseInt(fields[0]);
+            var end1 = Integer.parseInt(fields[1]);
+            var start2 = Integer.parseInt(fields[2]);
+            var end2 = Integer.parseInt(fields[3]);
+            if (end1 >= start2 && end2 >= start1)
                 overlap++;
         }
         return overlap;
     }
-
 }
