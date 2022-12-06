@@ -1,7 +1,5 @@
 package net.ddns.spellbank.day06;
 
-import java.util.HashSet;
-
 import net.ddns.spellbank.utils.InputFile;
 
 public class Day06 {
@@ -17,8 +15,11 @@ public class Day06 {
     public static long part1(String[] lines) {
         var line = lines[0];
         for (int i = 0; i < line.length() - 4; i++) {
-            if (allDif(line.substring(i, i + 4)))
+            var result = allDif(line.substring(i, i + 4));
+            if (result == -1)
                 return i + 4;
+            else
+                i += result;
         }
         return 0;
     }
@@ -26,16 +27,22 @@ public class Day06 {
     public static long part2(String[] lines) {
         var line = lines[0];
         for (int i = 0; i < line.length() - 14; i++) {
-            if (allDif(line.substring(i, i + 14)))
+            var result = allDif(line.substring(i, i + 14));
+            if (result == -1)
                 return i + 14;
+            else
+                i += result;
         }
         return 0;
     }
 
-    private static boolean allDif(String s) {
-        var code = new HashSet<Character>();
-        for (char c : s.toCharArray())
-            code.add(c);
-        return code.size() == s.length();
+    private static int allDif(String s) {
+        for (int x = s.length() - 1; x > 0; x--) {
+            for (int y = x - 1; y >= 0; y--) {
+                if (s.charAt(x) == s.charAt(y))
+                    return y;
+            }
+        }
+        return -1;
     }
 }
