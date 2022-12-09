@@ -55,30 +55,14 @@ public class Ropes implements IRope {
             int head_y = rope[i - 1].y;
             int tail_x = rope[i].x;
             int tail_y = rope[i].y;
-            if (Math.abs(head_x - tail_x) <= 1 && Math.abs(head_y - tail_y) <= 1)
+            int diffX = head_x - tail_x;
+            int diffY = head_y - tail_y;
+            if (Math.abs(diffX) <= 1 && Math.abs(diffY) <= 1) {
                 break;
-
-            if (head_x == tail_x && head_y == tail_y - 2) { // Up
-                tail_y--;
-            } else if (head_x == tail_x && head_y == tail_y + 2) { // Down
-                tail_y++;
-            } else if (head_y == tail_y && head_x == tail_x - 2) { // Left
-                tail_x--;
-            } else if (head_y == tail_y && head_x == tail_x + 2) { // Right
-                tail_x++;
-            } else if (head_x < tail_x && head_y < tail_y) { // Left and Down
-                tail_x--;
-                tail_y--;
-            } else if (head_x < tail_x && head_y > tail_y) { // Left and Up
-                tail_x--;
-                tail_y++;
-            } else if (head_x > tail_x && head_y > tail_y) { // Right and Up
-                tail_x++;
-                tail_y++;
-            } else if (head_x > tail_x && head_y < tail_y) { // Right and down
-                tail_x++;
-                tail_y--;
             }
+
+            tail_x += Integer.signum(diffX);
+            tail_y += Integer.signum(diffY);
             rope[i] = new Point(tail_x, tail_y);
         }
         visited.add(rope[9]);

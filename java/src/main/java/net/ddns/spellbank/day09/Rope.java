@@ -51,26 +51,13 @@ public class Rope implements IRope {
     }
 
     private void updateTail() {
-        if (Math.abs(head.x - tail.x) <= 1 && Math.abs(head.y - tail.y) <= 1) {
-            return;
+        int diffX = head.x - tail.x;
+        int diffY = head.y - tail.y;
+        if (Math.abs(diffX) > 1 || Math.abs(diffY) > 1) {
+            int tail_x = tail.x + Integer.signum(diffX);
+            int tail_y = tail.y + Integer.signum(diffY);
+            tail = new Point(tail_x, tail_y);
+            visited.add(tail);
         }
-        int tail_x = tail.x;
-        int tail_y = tail.y;
-        if (tail.x < head.x && head.x - tail.x > 1) {
-            tail_x++;
-            tail_y = head.y;
-        } else if (tail.x > head.x && tail.x - head.x > 1) {
-            tail_x--;
-            tail_y = head.y;
-        }
-        if (tail.y < head.y && head.y - tail.y > 1) {
-            tail_y++;
-            tail_x = head.x;
-        } else if (tail.y > head.y && tail.y - head.y > 1) {
-            tail_y--;
-            tail_x = head.x;
-        }
-        tail = new Point(tail_x, tail_y);
-        visited.add(tail);
     }
 }
