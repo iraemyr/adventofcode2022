@@ -17,19 +17,14 @@ public class Day10 {
         int cycle = 0;
         long sum = 0;
         for (var line : lines) {
-            switch (line.charAt(0)) {
-                case 'n':
-                    cycle++;
-                    sum += cycle(x, cycle);
-                    break;
-                case 'a':
-                    var fields = line.split(" ");
-                    var offset = Integer.parseInt(fields[1]);
-                    cycle++;
-                    sum += cycle(x, cycle);
-                    cycle++;
-                    sum += cycle(x, cycle);
-                    x += offset;
+            if (line.charAt(0) == 'n')
+                sum += cycle(x, ++cycle);
+            else {
+                var fields = line.split(" ");
+                var offset = Integer.parseInt(fields[1]);
+                sum += cycle(x, ++cycle);
+                sum += cycle(x, ++cycle);
+                x += offset;
             }
         }
         return sum;
@@ -41,39 +36,28 @@ public class Day10 {
         int col = -1;
         char[][] screen = new char[6][40];
         for (var line : lines) {
-            switch (line.charAt(0)) {
-                case 'n':
-                    col++;
-                    if (col == 40) {
-                        row++;
-                        col = 0;
-                    }
-                    updateScreen(screen, x, row, col);
-                    break;
-                case 'a':
-                    var fields = line.split(" ");
-                    var offset = Integer.parseInt(fields[1]);
-                    col++;
-                    if (col == 40) {
-                        row++;
-                        col = 0;
-                    }
-                    updateScreen(screen, x, row, col);
-                    col++;
-                    if (col == 40) {
-                        row++;
-                        col = 0;
-                    }
-                    updateScreen(screen, x, row, col);
-                    x += offset;
+            if (line.charAt(0) == 'n') {
+                if (++col == 40) {
+                    row++;
+                    col = 0;
+                }
+                updateScreen(screen, x, row, col);
+            } else {
+                var fields = line.split(" ");
+                var offset = Integer.parseInt(fields[1]);
+                if (++col == 40) {
+                    row++;
+                    col = 0;
+                }
+                updateScreen(screen, x, row, col);
+                if (++col == 40) {
+                    row++;
+                    col = 0;
+                }
+                updateScreen(screen, x, row, col);
+                x += offset;
             }
         }
-        col++;
-        if (col == 40) {
-            row++;
-            col = 0;
-        }
-        updateScreen(screen, x, row, col);
         return screen;
     }
 
@@ -85,8 +69,6 @@ public class Day10 {
     }
 
     private static void updateScreen(char[][] screen, int x, int row, int col) {
-        if (row == screen.length)
-            return;
         if (Math.abs(col - x) <= 1) {
             screen[row][col] = '#';
         } else
@@ -100,5 +82,4 @@ public class Day10 {
             System.out.println();
         }
     }
-
 }
