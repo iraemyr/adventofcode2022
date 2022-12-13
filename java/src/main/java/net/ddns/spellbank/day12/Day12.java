@@ -24,6 +24,23 @@ public class Day12 {
             }
             return neighbors;
         }
+
+        public List<Point> neighbors2(char[][] map) {
+            var neighbors = new ArrayList<Point>();
+            if (row != 0 && map[row][col] - map[row - 1][col] <= 1) {
+                neighbors.add(new Point(row - 1, col));
+            }
+            if (row < map.length - 1 && map[row][col] - map[row + 1][col] <= 1) {
+                neighbors.add(new Point(row + 1, col));
+            }
+            if (col != 0 && map[row][col] - map[row][col - 1] <= 1) {
+                neighbors.add(new Point(row, col - 1));
+            }
+            if (col < map[0].length - 1 && map[row][col] - map[row][col + 1] <= 1) {
+                neighbors.add(new Point(row, col + 1));
+            }
+            return neighbors;
+        }
     };
 
     record State(Point p, int cost) {
@@ -97,40 +114,29 @@ public class Day12 {
             }
         }
 
-        var min = Integer.MAX_VALUE;
-        for (int i = 0; i < map.length; i++) {
-            for (int j = 0; j < map[0].length; j++) {
-                if (map[i][j] == 'a') {
-                    var visited = new HashSet<Point>();
-                    var start = new Point(i, j);
-                    visited.add(start);
-                    var q = new HashSet<Point>();
-                    var q2 = new HashSet<Point>();
-                    q.add(start);
-                    int depth = -1;
-                    outer: while (!q.isEmpty()) {
-                        depth++;
-                        if (depth > min)
-                            break;
-                        for (var p : q) {
-                            visited.add(p);
-                            if (p.equals(end)) {
-                                min = Math.min(depth, min);
-                                break outer;
-                            }
-                            for (var neighbor : p.neighbors(map))
-                                if (!visited.contains(neighbor))
-                                    q2.add(neighbor);
-                        }
-                        var tmp = q;
-                        q = q2;
-                        q2 = tmp;
-                        q2.clear();
-                    }
-                }
+        var visited = new HashSet<Point>();
+        visited.add(end);
+        var q = new HashSet<Point>();
+        var q2 = new HashSet<Point>();
+        q.add(end);
+        int depth = -1;
+        while (!q.isEmpty()) {
+            depth++;
+
+            for (var p : q) {
+                visited.add(p);
+                if (map[p.row][p.col] == 'a')
+                    return depth;
+                for (var neighbor : p.neighbors2(map))
+                    if (!visited.contains(neighbor))
+                        q2.add(neighbor);
             }
+            var tmp = q;
+            q = q2;
+            q2 = tmp;
+            q2.clear();
         }
-        return min;
+        return -1;
     }
 
     @SuppressWarnings("unused")
