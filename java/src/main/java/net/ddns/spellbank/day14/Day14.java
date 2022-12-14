@@ -31,10 +31,6 @@ public class Day14 {
 
     public static long part2(String[] lines) {
         var mapVals = parseInput(lines);
-        var map = mapVals.map;
-        for (int col = 0; col < 700; col++) {
-            map.put(new Point(col, mapVals.maxRow + 2), '#');
-        }
         long sand = 0;
         while (!dropSandFloor(mapVals.map, mapVals.maxRow)) {
             sand++;
@@ -110,6 +106,10 @@ public class Day14 {
         while (true) {
             if (map.containsKey(new Point(500, 0)))
                 return true;
+            if (curRow == maxRow + 1) {
+                map.put(new Point(curCol, curRow), 'o');
+                return false;
+            }
             if (map.containsKey(new Point(curCol, curRow + 1))) {
                 if (map.containsKey(new Point(curCol - 1, curRow + 1))) {
                     if (map.containsKey(new Point(curCol + 1, curRow + 1))) {
