@@ -17,7 +17,7 @@ class TestDay15 {
     @Test
     void part2() {
         String[] lines = InputFile.getLines("day15/input1");
-        assertEquals(13639962836448L, Day15.part2(lines, 4000000));
+        assertEquals(13639962836448L, Day15.part2parallel(lines, 4000000));
     }
 
     @Test
@@ -29,6 +29,6 @@ class TestDay15 {
     @Test
     void testpart2() {
         String[] lines = InputFile.getLines("day15/test1");
-        assertEquals(56000011, Day15.part2(lines, 20));
+        assertEquals(56000011, Day15.part2parallel(lines, 20));
     }
 }

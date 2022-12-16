@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.LongStream;
 
 import net.ddns.spellbank.utils.InputFile;
 
@@ -17,12 +18,26 @@ public class Day15 {
     private record Points(Point sensor, Point beacon) {
     };
 
+    private record ListPointAndVal(List<Point> ranges, long iter) {
+    };
+
     public static void main(String[] args) {
         String file = "day15/input1";
         String[] lines = InputFile.getLines(file);
 
+        // var start = System.nanoTime();
         System.out.println(part1(lines, 2000000)); // 4907780
-        System.out.println(part2(lines, 4000000)); // 13639962836448
+        // var stop = System.nanoTime();
+        // System.out.println((stop - start) / 1_000_000);
+        // start = System.nanoTime();
+        // System.out.println(part2(lines, 4000000)); // 13639962836448
+        // stop = System.nanoTime();
+        // System.out.println((stop - start) / 1_000_000);
+        // start = System.nanoTime();
+        System.out.println(part2parallel(lines, 4000000)); // 13639962836448
+        // parallel cut part2 time in half
+        // stop = System.nanoTime();
+        // System.out.println((stop - start) / 1_000_000);
     }
 
     public static long part1(String[] lines, long row) {
@@ -53,6 +68,20 @@ public class Day15 {
             }
         }
         return 0;
+    }
+
+    public static long part2parallel(String[] lines, long max) {
+        var sb = parsePoints(lines);
+        var result = LongStream.rangeClosed(0, max).parallel()
+                .mapToObj(limit -> new ListPointAndVal(getRanges(sb, limit), limit))
+                .map(range -> new ListPointAndVal(limitRanges(range.ranges, max), range.iter))
+
+                .filter(ranges -> ranges.ranges.size() == 2).findFirst().get();
+        var p = result.ranges.get(0);
+
+        long col = p.col == 0 ? p.row + 1 : p.col - 1;
+        return 4000000 * col + result.iter;
+
     }
 
     private static List<Points> parsePoints(String[] lines) {
