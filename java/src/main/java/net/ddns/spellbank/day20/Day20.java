@@ -3,6 +3,7 @@ package net.ddns.spellbank.day20;
 import java.util.ArrayList;
 
 import net.ddns.spellbank.utils.InputFile;
+import net.ddns.spellbank.utils.MyUtils;
 
 public class Day20 {
     record NumAndPos(long num, int pos) {
@@ -32,7 +33,7 @@ public class Day20 {
                 continue;
             var index = nums.indexOf(num);
             var n = nums.remove(index);
-            int newIndex = (int) euclideanMod(index + num.num, nums.size());
+            int newIndex = (int) MyUtils.euclideanMod(index + num.num, nums.size());
 
             if (newIndex == 0)
                 nums.add(n);
@@ -66,7 +67,7 @@ public class Day20 {
                     continue;
                 var index = nums.indexOf(num);
                 var n = nums.remove(index);
-                var newIndex = (int) euclideanMod(index + num.num, nums.size());
+                var newIndex = (int) MyUtils.euclideanMod(index + num.num, nums.size());
 //            }
 
                 if (newIndex == 0)
@@ -83,14 +84,6 @@ public class Day20 {
             sum += nums.get(index).num;
         }
         return sum;
-    }
-
-    static long euclideanMod(long a, long n) {
-        return n < 0 ? euclideanMod(a, -n) : mod(a, n);
-    }
-
-    static long mod(long a, long n) {
-        return a < 0 ? (a % n + n) % n : a % n;
     }
 
 }
