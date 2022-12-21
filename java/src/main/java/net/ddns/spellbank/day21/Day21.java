@@ -22,16 +22,17 @@ public class Day21 {
 
     public static long part2(String[] lines, long high) {
         long low = 0;
-        // long high = Long.MAX_VALUE / 100;
         long found = 0;
+        var monkeys = parseInput(lines);
+        var root = monkeys.get("root");
+        root.setOp('=');
+        var me = monkeys.get("humn");
 
         // binary search for the correct value
         while (true) {
+            for (var monkey : monkeys.values())
+                monkey.reset();
             long mid = ((high - low) / 2) + low;
-            var monkeys = parseInput(lines);
-            var root = monkeys.get("root");
-            root.setOp('=');
-            var me = monkeys.get("humn");
             me.setNumber(mid);
             var diff = root.getNumber();
             if (diff < 0) {
@@ -46,10 +47,8 @@ public class Day21 {
 
         // A range of numbers will return as equal, we want the lowest
         for (long i = -7; i < 1; i++) {
-            var monkeys = parseInput(lines);
-            var root = monkeys.get("root");
-            root.setOp('=');
-            var me = monkeys.get("humn");
+            for (var monkey : monkeys.values())
+                monkey.reset();
             me.setNumber(found + i);
             if (root.getNumber() == 0)
                 return found + i;

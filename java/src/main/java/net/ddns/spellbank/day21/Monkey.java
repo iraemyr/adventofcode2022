@@ -61,4 +61,9 @@ public class Monkey {
         return name + ", " + monkey1.name + " " + op + " " + monkey2.name;
     }
 
+    public void reset() {
+        if (monkey1 != null)
+            number = null;
+    }
+
 }
