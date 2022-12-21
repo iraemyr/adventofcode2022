@@ -17,4 +17,14 @@ public class MyUtils {
     public static long mod(long a, long n) {
         return a < 0 ? (a % n + n) % n : a % n;
     }
+
+    public static long gcd(long a, long b) {
+        if (a == 0)
+            return b;
+        return gcd(b % a, a);
+    }
+
+    public static long lcm(long a, long b) {
+        return (a / gcd(a, b)) * b;
+    }
 }

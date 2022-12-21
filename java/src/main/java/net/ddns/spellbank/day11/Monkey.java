@@ -3,6 +3,8 @@ package net.ddns.spellbank.day11;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.ddns.spellbank.utils.MyUtils;
+
 public class Monkey {
     static List<Monkey> monkeys;
     List<Long> items;
@@ -79,18 +81,8 @@ public class Monkey {
         monkeys = li;
         long acc = 1;
         for (var monkey : monkeys) {
-            acc = lcm(acc, monkey.div);
+            acc = MyUtils.lcm(acc, monkey.div);
         }
         lcm = acc;
-    }
-
-    static long gcd(long a, long b) {
-        if (a == 0)
-            return b;
-        return gcd(b % a, a);
-    }
-
-    static long lcm(long a, long b) {
-        return (a / gcd(a, b)) * b;
     }
 }
