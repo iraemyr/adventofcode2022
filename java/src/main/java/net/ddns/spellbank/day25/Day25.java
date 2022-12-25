@@ -1,5 +1,7 @@
 package net.ddns.spellbank.day25;
 
+import java.util.Arrays;
+
 import net.ddns.spellbank.utils.InputFile;
 
 public class Day25 {
@@ -12,11 +14,7 @@ public class Day25 {
     }
 
     public static String part1(String[] lines) {
-        long sum = 0;
-        for (var line : lines) {
-            sum += parseNumber(line);
-        }
-        return toSnafu2(sum);
+        return toSnafu(Arrays.stream(lines).parallel().mapToLong((s) -> parseNumber(s)).sum());
     }
 
     private static long parseNumber(String line) {
@@ -47,7 +45,7 @@ public class Day25 {
         return sum;
     }
 
-    private static String toSnafu2(long sum) {
+    private static String toSnafu(long sum) {
         StringBuilder sb = new StringBuilder();
         while (sum != 0) {
             int remainder = (int) (sum % 5);
