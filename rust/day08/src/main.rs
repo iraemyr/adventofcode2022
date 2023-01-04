@@ -40,33 +40,12 @@ fn is_visible(row: usize, col: usize, map: &Vec<Vec<u8>>) -> bool {
     }
     let r = map.get(row).unwrap();
     let height = *r.get(col).unwrap();
-    if r[0..col].iter().all(|h| *h < height) {
-        return true;
-    }
-
-    if r[(col + 1)..map.len()].iter().all(|h| *h < height) {
-        return true;
-    }
-
-    let mut blocked = false;
-    for r in map.iter().take(row) {
-        if r[col] >= height {
-            blocked = true;
-            break;
-        }
-    }
-    if !blocked {
-        return true;
-    }
-
-    blocked = false;
-    for r in map.iter().skip(row + 1) {
-        if r[col] >= height {
-            blocked = true;
-            break;
-        }
-    }
-    !blocked
+    r[0..col].iter().all(|h| *h < height)
+        || r[(col + 1)..map.len()].iter().all(|h| *h < height)
+        || (0..row).map(|r| map[r][col]).all(|h| h < height)
+        || ((row + 1)..map.len())
+            .map(|r| map[r][col])
+            .all(|h| h < height)
 }
 
 fn scenic_score(row: usize, col: usize, map: &Vec<Vec<u8>>) -> u32 {
@@ -76,39 +55,21 @@ fn scenic_score(row: usize, col: usize, map: &Vec<Vec<u8>>) -> u32 {
     let r = map.get(row).unwrap();
     let height = *r.get(col).unwrap();
 
-    let mut left = 0;
-    for tree in r[0..col].iter().rev() {
-        left += 1;
-        if *tree >= height {
+    visible_trees(r[0..col].iter().rev().copied(), height)
+        * visible_trees(r[(col + 1)..].iter().copied(), height)
+        * visible_trees(map.iter().take(row).rev().map(|v| v[col]), height)
+        * visible_trees(map.iter().skip(row + 1).map(|v| v[col]), height)
+}
+
+fn visible_trees(it: impl Iterator<Item = u8>, height: u8) -> u32 {
+    let mut trees = 0;
+    for h in it {
+        trees += 1;
+        if h >= height {
             break;
         }
     }
-
-    let mut right = 0;
-    for tree in r[(col + 1)..].iter() {
-        right += 1;
-        if *tree >= height {
-            break;
-        }
-    }
-
-    let mut up = 0;
-    for r in map.iter().take(row).rev() {
-        up += 1;
-        if height <= r[col] {
-            break;
-        }
-    }
-
-    let mut down = 0;
-    for r in map.iter().skip(row + 1) {
-        down += 1;
-        if height <= r[col] {
-            break;
-        }
-    }
-
-    up * down * left * right
+    trees
 }
 
 #[cfg(test)]
