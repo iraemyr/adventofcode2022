@@ -20,7 +20,7 @@ fn part2(sacks: String) -> u32 {
                 .map(|bag| bag.bytes().map(priority).fold(0_u64, insert))
                 .reduce(|acc, set| acc & set)
                 .unwrap()
-                .trailing_zeros() as u32
+                .trailing_zeros()
         })
         .sum()
 }
