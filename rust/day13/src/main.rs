@@ -59,8 +59,6 @@ fn part2(input: String) -> i32 {
         .collect();
     data.push(d1.clone());
     data.push(d2.clone());
-    // let d1 = serde_json::from_str("[[2]]").unwrap();
-    // let d2 = serde_json::from_str("[[6]]").unwrap();
     data.sort();
     data.iter()
         .zip(1..)
