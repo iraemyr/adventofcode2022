@@ -1,9 +1,10 @@
 use std::collections::HashMap;
 use std::fs;
 
-use nom::multi::many0;
-use nom::sequence::{preceded, separated_pair};
-use nom::{bytes::complete::tag, character::complete::digit1, combinator::map_res, IResult};
+use nom::character::complete::i32;
+use nom::multi::separated_list1;
+use nom::sequence::separated_pair;
+use nom::{bytes::complete::tag, IResult};
 
 fn main() {
     let contents = fs::read_to_string("input1").expect("File not found");
@@ -67,18 +68,16 @@ fn nom_parse(input: String) -> (HashMap<(i32, i32), char>, i32) {
     let mut map = HashMap::new();
     let mut lowest = 0;
     input.lines().for_each(|line| {
-        if let Ok((i, mut position)) = parse_point(line) {
-            //print!("{:?} : ", point);
+        if let Ok((_, points)) = parse_points(line) {
+            let mut position = points[0];
             lowest = lowest.max(position.1);
             map.insert(position, '#');
-            if let Ok((_, points)) = parse_remaining(i) {
-                for p in points {
-                    lowest = lowest.max(p.1);
-                    while position != p {
-                        position.0 += (p.0 - position.0).signum();
-                        position.1 += (p.1 - position.1).signum();
-                        map.insert(position, '#');
-                    }
+            for p in points.iter().skip(1) {
+                lowest = lowest.max(p.1);
+                while position != *p {
+                    position.0 += (p.0 - position.0).signum();
+                    position.1 += (p.1 - position.1).signum();
+                    map.insert(position, '#');
                 }
             }
         }
@@ -86,16 +85,12 @@ fn nom_parse(input: String) -> (HashMap<(i32, i32), char>, i32) {
     (map, lowest)
 }
 
-fn parse_int(input: &str) -> IResult<&str, i32> {
-    map_res(digit1, str::parse::<i32>)(input)
-}
-
 fn parse_point(input: &str) -> IResult<&str, (i32, i32)> {
-    separated_pair(parse_int, tag(","), parse_int)(input)
+    separated_pair(i32, tag(","), i32)(input)
 }
 
-fn parse_remaining(input: &str) -> IResult<&str, Vec<(i32, i32)>> {
-    many0(preceded(tag(" -> "), parse_point))(input)
+fn parse_points(input: &str) -> IResult<&str, Vec<(i32, i32)>> {
+    separated_list1(tag(" -> "), parse_point)(input)
 }
 
 #[cfg(test)]
