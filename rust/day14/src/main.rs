@@ -1,6 +1,10 @@
 use std::collections::HashMap;
 use std::fs;
 
+use nom::multi::many0;
+use nom::sequence::{preceded, separated_pair};
+use nom::{bytes::complete::tag, character::complete::digit1, combinator::map_res, IResult};
+
 fn main() {
     let contents = fs::read_to_string("input1").expect("File not found");
     println!("{}", part1(contents.clone())); // 638
@@ -8,12 +12,12 @@ fn main() {
 }
 
 fn part1(input: String) -> i32 {
-    let (mut map, lowest) = parse_map(input);
+    let (mut map, lowest) = nom_parse(input);
     do_drops(&mut map, lowest)
 }
 
 fn part2(input: String) -> i32 {
-    let (mut map, lowest) = parse_map(input);
+    let (mut map, lowest) = nom_parse(input);
     do_drops_2(&mut map, lowest)
 }
 
@@ -59,34 +63,39 @@ fn drop(map: &HashMap<(i32, i32), char>, lowest: i32) -> (i32, i32) {
     pos
 }
 
-fn parse_map(input: String) -> (HashMap<(i32, i32), char>, i32) {
-    let mut lowest = 0;
+fn nom_parse(input: String) -> (HashMap<(i32, i32), char>, i32) {
     let mut map = HashMap::new();
+    let mut lowest = 0;
     input.lines().for_each(|line| {
-        let fields = line.split(" -> ");
-        let mut position = (0, 0);
-        let mut first = true;
-        for field in fields {
-            let mut nums = field.split(',');
-            let pos = (
-                nums.next().unwrap().parse::<i32>().unwrap(),
-                nums.next().unwrap().parse::<i32>().unwrap(),
-            );
-            lowest = lowest.max(pos.1);
-            if !first {
-                while position != pos {
-                    position.0 += (pos.0 - position.0).signum();
-                    position.1 += (pos.1 - position.1).signum();
-                    map.insert(position, '#');
+        if let Ok((i, mut position)) = parse_point(line) {
+            //print!("{:?} : ", point);
+            lowest = lowest.max(position.1);
+            map.insert(position, '#');
+            if let Ok((_, points)) = parse_remaining(i) {
+                for p in points {
+                    lowest = lowest.max(p.1);
+                    while position != p {
+                        position.0 += (p.0 - position.0).signum();
+                        position.1 += (p.1 - position.1).signum();
+                        map.insert(position, '#');
+                    }
                 }
-            } else {
-                first = false;
-                map.insert(pos, '#');
-                position = pos;
             }
         }
     });
     (map, lowest)
+}
+
+fn parse_int(input: &str) -> IResult<&str, i32> {
+    map_res(digit1, str::parse::<i32>)(input)
+}
+
+fn parse_point(input: &str) -> IResult<&str, (i32, i32)> {
+    separated_pair(parse_int, tag(","), parse_int)(input)
+}
+
+fn parse_remaining(input: &str) -> IResult<&str, Vec<(i32, i32)>> {
+    many0(preceded(tag(" -> "), parse_point))(input)
 }
 
 #[cfg(test)]
